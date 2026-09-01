@@ -148,7 +148,7 @@ window.DCODE_PROJECTS = [
     order: '05',
     category: 'Zoho · Migration · Deluge · APIs',
     title: 'Enterprise Zoho CRM Engineering & Migration',
-    subtitle: 'Large-volume recruitment data migration, custom Deluge functions, API integrations, reconciliation, and workflow reliability.',
+    subtitle: 'Large-volume recruitment resume migration with Google Drive resume links, parsed candidate fields, facility mapping, confidence scoring, custom Deluge functions, API integrations, reconciliation, and workflow reliability.',
     status: 'Production work reconstruction',
     role: 'Zoho CRM Engineer · Migration & Automation Specialist',
     stack: ['Zoho CRM','Zoho Recruit','Deluge','Workflow Rules','REST APIs','OAuth2','CSV / Batch Processing'],
@@ -158,16 +158,17 @@ window.DCODE_PROJECTS = [
       ['62K+','Apploi source scope'],
       ['240K','API-call usage evidence in portfolio material']
     ],
-    problem: 'Large legacy recruitment datasets needed controlled migration into a structured Zoho environment without losing traceability, lookup integrity, attachment relationships, or auditability.',
-    solution: 'I treated each source as a controlled migration scope with mapping, cleansing, normalization, deduplication, pilot imports, batch controls, reconciliation, UAT, and post-write verification.',
+    problem: 'Large legacy recruitment datasets needed controlled migration into a structured Zoho environment without losing traceability between the resume filename, Google Drive resume file, parsed candidate identity, facility applied, license details, and confidence score.',
+    solution: 'I treated each source row as a controlled migration record: resume_filename and gdrive_link preserved file traceability, candidate fields mapped into Zoho records, facility-applied drove lookup alignment, confidence flagged review risk, and filename_date/license supported validation, deduplication, reconciliation, UAT, and post-write verification.',
     built: [
-      'Field mapping, cleansing, deduplication, exception handling, and reconciliation rules.',
+      'Field mapping, cleansing, deduplication, exception handling, and reconciliation rules for resume_filename, gdrive_link, first_name, last_name, email, mobile, secondary_email, company, designation, street, state, zip, facility-applied, confidence, filename_date, and license.',
+      'Source-to-Zoho mapping where parsed candidate identity, contact, address, facility, resume link, confidence, and license fields are retained as auditable migration inputs.',
       'Deluge functions for stage-based history, subform preservation, lookup handling, file transfer, safe updates, and verification.',
       'Webhook and REST API integrations with named connections and external processing layers.',
       'Failure analysis and live execution monitoring for HTTP/data-type issues.'
     ],
-    architecture: ['Source Inventory','Clean + Normalize','Map + Deduplicate','Pilot','Batch Import','Reconcile','UAT / Acceptance'],
-    reliability: ['Disposition for every source record','Post-write verification','Exception review','Named connections','Failure logs'],
+    architecture: ['Resume File Inventory','Drive Link Traceability','Parsed Candidate Fields','Facility + License Mapping','Confidence Review Gate','Map + Deduplicate','Batch Import','Reconcile','UAT / Acceptance'],
+    reliability: ['Disposition for every source record','Resume-to-record traceability','Confidence-based exception review','Facility lookup verification','Post-write verification','Named connections','Failure logs'],
     outcome: 'The demo presents a migration control center rather than pretending the old client tenant is still available. Visitors can inspect mappings, batches, reconciliation, and function execution evidence using synthetic data.',
     demoLabel: 'Launch Migration Control Demo'
   },
