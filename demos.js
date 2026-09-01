@@ -719,9 +719,69 @@ function ocr() {
 /* ZOHO MIGRATION                                                              */
 /* -------------------------------------------------------------------------- */
 function migration() {
-  let page='Migration Overview';root.innerHTML=`<div id="migrationMount"></div>`;const mount=document.getElementById('migrationMount');
-  function render(){mount.innerHTML=genericShell({brand:'Zoho Migration Control Center',tabs:['Overview','Mappings','Batches','Functions','Reconciliation'],activeTab:page==='Migration Overview'?'Overview':page==='Field Mapping'?'Mappings':page==='Import Batches'?'Batches':page==='Deluge Functions'?'Functions':'Reconciliation',sideTitle:'Migration',sideItems:['Migration Overview','Field Mapping','Import Batches','Deluge Functions','API Usage','Reconciliation'],activeSide:page,content:`<div class="toolbar"><h2>${page}</h2>${page==='Import Batches'?'<button class="ui-btn" id="runBatch">Run synthetic batch</button>':''}</div><div id="migrationPage"></div>`});document.querySelectorAll('[data-side-item]').forEach(b=>b.onclick=()=>{page=b.dataset.sideItem;render()});draw()}
-  function draw(){const el=document.getElementById('migrationPage');if(page==='Migration Overview')el.innerHTML=`<div class="migration-grid"><div class="migr-card"><strong>120,000+</strong><span>overall source program</span></div><div class="migr-card"><strong>59,000+</strong><span>JazzHR scope</span></div><div class="migr-card"><strong>62,000+</strong><span>Apploi scope</span></div><div class="migr-card"><strong>99.1%</strong><span>demo reconciliation rate</span></div></div>`;if(page==='Field Mapping')el.innerHTML=`<div class="panel"><h3>Mapping Controls</h3><div class="mapping"><div>legacy_email</div><div class="maparrow">→</div><div>Email</div><div>legacy_phone</div><div class="maparrow">→</div><div>Phone</div><div>facility_text</div><div class="maparrow">→</div><div>Facility Lookup</div><div>legacy_status</div><div class="maparrow">→</div><div>Recruitment Stage</div></div></div>`;if(page==='Import Batches'){el.innerHTML=`<div class="panel" id="batchLog"><h3>Batch Progress</h3><div><small>Batch JHR-027</small><div class="progress"><i style="width:88%"></i></div></div><div style="margin-top:12px"><small>Batch APP-014</small><div class="progress"><i style="width:62%"></i></div></div></div>`;document.getElementById('runBatch').onclick=()=>{document.getElementById('batchLog').innerHTML='<h3>Synthetic batch JHR-028</h3><div class="timeline"><div class="event"><time>Step 1</time><strong>Source manifest locked · 5,000 records</strong></div><div class="event"><time>Step 2</time><strong>Normalization complete · 37 exceptions</strong></div><div class="event"><time>Step 3</time><strong>Deduplication complete · 121 duplicates</strong></div><div class="event"><time>Step 4</time><strong>Controlled import complete · 4,842 migrated</strong></div></div>';toast('Batch complete · every source record received a disposition')}}if(page==='Deluge Functions')el.innerHTML=`<div class="panel"><h3>automation.FillRecruitmentLogs1</h3><pre class="code-box">validate record ID\nfetch live Lead\npreserve Recruitment_Logs subform rows\nappend new stage log\nupdate record with triggers suppressed\nrefetch + verify expected row count</pre><button class="ui-btn" onclick="toast('Synthetic Deluge execution · HTTP 200 Success')">Run test execution</button></div>`;if(page==='API Usage')el.innerHTML=`<div class="panel"><h3>API Operations</h3><div class="timeline"><div class="event"><time>10:08</time><strong>Get Record by ID · 200</strong></div><div class="event"><time>10:08</time><strong>Search Records · 200</strong></div><div class="event"><time>10:09</time><strong>Update Record · 200</strong></div></div></div>`;if(page==='Reconciliation')el.innerHTML=`<div class="panel"><table class="dbtable"><tr><th>Disposition</th><th>Count</th><th>Rule</th></tr><tr><td>Migrated</td><td>4,812</td><td>Accepted + verified</td></tr><tr><td>Duplicate</td><td>143</td><td>Stable ID / email / phone</td></tr><tr><td>Exception</td><td>45</td><td>Manual review required</td></tr></table></div>`}render();
+  let page = 'Migration Overview';
+  const fieldMappings = [
+    ['resume_filename', 'Source Resume Filename', 'Trace source row and match to stored resume file'],
+    ['gdrive_link', 'Resume File Link', 'Preserve Google Drive evidence and recruiter access path'],
+    ['first_name', 'First Name', 'Candidate identity'],
+    ['last_name', 'Last Name', 'Candidate identity'],
+    ['email', 'Email', 'Primary dedupe and contact field'],
+    ['mobile', 'Mobile', 'Phone normalization and duplicate check'],
+    ['secondary_email', 'Secondary Email', 'Secondary contact field'],
+    ['company', 'Current / Previous Company', 'Employment context'],
+    ['designation', 'Designation', 'Role title / experience context'],
+    ['street', 'Street', 'Candidate address'],
+    ['state', 'State', 'Candidate address'],
+    ['zip', 'Zip Code', 'Candidate address'],
+    ['facility-applied', 'Facility Lookup', 'Target facility relationship in Zoho'],
+    ['confidence', 'Migration Confidence', 'Review gate for uncertain parsed data'],
+    ['filename_date', 'Source File Date', 'Source timing and batch validation'],
+    ['license', 'License', 'Credential / qualification field']
+  ];
+  root.innerHTML = `<div id="migrationMount"></div>`;
+  const mount = document.getElementById('migrationMount');
+  function render() {
+    mount.innerHTML = genericShell({
+      brand: 'Zoho Migration Control Center',
+      tabs: ['Overview', 'Mappings', 'Batches', 'Functions', 'Reconciliation'],
+      activeTab: page === 'Migration Overview' ? 'Overview' : page === 'Field Mapping' ? 'Mappings' : page === 'Import Batches' ? 'Batches' : page === 'Deluge Functions' ? 'Functions' : 'Reconciliation',
+      sideTitle: 'Migration',
+      sideItems: ['Migration Overview', 'Field Mapping', 'Import Batches', 'Deluge Functions', 'API Usage', 'Reconciliation'],
+      activeSide: page,
+      content: `<div class="toolbar"><h2>${page}</h2>${page === 'Import Batches' ? '<button class="ui-btn" id="runBatch">Run synthetic batch</button>' : ''}</div><div id="migrationPage"></div>`
+    });
+    document.querySelectorAll('[data-side-item]').forEach(b => b.onclick = () => {
+      page = b.dataset.sideItem;
+      render();
+    });
+    draw();
+  }
+  function draw() {
+    const el = document.getElementById('migrationPage');
+    if (page === 'Migration Overview') {
+      el.innerHTML = `<div class="migration-grid"><div class="migr-card"><strong>120,000+</strong><span>overall source program</span></div><div class="migr-card"><strong>59,000+</strong><span>JazzHR scope</span></div><div class="migr-card"><strong>62,000+</strong><span>Apploi scope</span></div><div class="migr-card"><strong>99.1%</strong><span>demo reconciliation rate</span></div></div>`;
+    }
+    if (page === 'Field Mapping') {
+      el.innerHTML = `<div class="panel"><h3>Resume migration field map</h3><p class="mapping-note">Source resume rows are mapped into Zoho candidate, contact, address, facility, evidence, and review fields before batch import.</p><div class="mapping migration-field-map">${fieldMappings.map(row => `<div><strong>${row[0]}</strong><small>Source column</small></div><div class="maparrow">-></div><div><strong>${row[1]}</strong><small>${row[2]}</small></div>`).join('')}</div></div>`;
+    }
+    if (page === 'Import Batches') {
+      el.innerHTML = `<div class="panel" id="batchLog"><h3>Batch Progress</h3><div><small>Batch JHR-027</small><div class="progress"><i style="width:88%"></i></div></div><div style="margin-top:12px"><small>Batch APP-014</small><div class="progress"><i style="width:62%"></i></div></div></div>`;
+      document.getElementById('runBatch').onclick = () => {
+        document.getElementById('batchLog').innerHTML = '<h3>Synthetic batch JHR-028</h3><div class="timeline"><div class="event"><time>Step 1</time><strong>Source manifest locked · resume_filename + gdrive_link verified</strong></div><div class="event"><time>Step 2</time><strong>Candidate/contact/address normalization complete · 37 confidence exceptions</strong></div><div class="event"><time>Step 3</time><strong>Facility lookup and license validation complete · 121 duplicates</strong></div><div class="event"><time>Step 4</time><strong>Controlled import complete · every source row received a disposition</strong></div></div>';
+        toast('Batch complete · every source record received a disposition');
+      };
+    }
+    if (page === 'Deluge Functions') {
+      el.innerHTML = `<div class="panel"><h3>automation.FillRecruitmentLogs1</h3><pre class="code-box">validate record ID\nfetch live Lead\npreserve Recruitment_Logs subform rows\nappend new stage log\nupdate record with triggers suppressed\nrefetch + verify expected row count</pre><button class="ui-btn" onclick="toast('Synthetic Deluge execution · HTTP 200 Success')">Run test execution</button></div>`;
+    }
+    if (page === 'API Usage') {
+      el.innerHTML = `<div class="panel"><h3>API Operations</h3><div class="timeline"><div class="event"><time>10:08</time><strong>Get Record by ID · 200</strong></div><div class="event"><time>10:08</time><strong>Search Records · 200</strong></div><div class="event"><time>10:09</time><strong>Update Record · 200</strong></div></div></div>`;
+    }
+    if (page === 'Reconciliation') {
+      el.innerHTML = `<div class="panel"><table class="dbtable"><tr><th>Disposition</th><th>Count</th><th>Rule</th></tr><tr><td>Migrated</td><td>4,812</td><td>Accepted + verified</td></tr><tr><td>Duplicate</td><td>143</td><td>Email / mobile / resume filename</td></tr><tr><td>Exception</td><td>45</td><td>Low confidence, missing facility, or license review</td></tr></table></div>`;
+    }
+  }
+  render();
 }
 
 /* -------------------------------------------------------------------------- */
