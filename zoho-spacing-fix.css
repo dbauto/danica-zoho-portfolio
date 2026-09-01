@@ -1,0 +1,11 @@
+@media (min-width: 901px) {
+  .zoho-map {
+    height: 470px;
+  }
+
+  .map-automation {
+    left: 210px;
+    top: 365px;
+    width: 245px;
+  }
+}
