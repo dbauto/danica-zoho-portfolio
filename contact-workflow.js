@@ -103,8 +103,39 @@
     });
   }
 
+  function fitAndWireProjectPreviews() {
+    document.querySelectorAll('.project').forEach((card, index) => {
+      const screen = card.querySelector('.laptop-screen');
+      const display = card.querySelector('.laptop-display');
+      const iframe = card.querySelector('.live-demo-preview');
+      const openDemo = card.querySelector('.projectactions .btn.primary');
+      if (!screen || !display || !iframe || !openDemo) return;
+      if (!screen.id) screen.id = `preview-${window.DCODE_PROJECTS?.[index]?.id || index}`;
+      const fit = () => {
+        if (document.fullscreenElement === screen) {
+          iframe.style.cssText = '';
+          return;
+        }
+        const scale = Math.min(display.clientWidth / 1600, display.clientHeight / 900);
+        Object.assign(iframe.style, {width:'1600px',height:'900px',transform:`scale(${scale})`,left:'0px',top:'0px'});
+      };
+      new ResizeObserver(fit).observe(display);
+      iframe.addEventListener('load', fit);
+      openDemo.removeAttribute('href');
+      openDemo.setAttribute('role', 'button');
+      openDemo.addEventListener('click', async event => {
+        event.preventDefault();
+        try { await screen.requestFullscreen(); }
+        catch (_) { screen.scrollIntoView({behavior:'smooth',block:'center'}); }
+      });
+      document.addEventListener('fullscreenchange', fit);
+      fit();
+    });
+  }
+
   enrichProjectActions();
   keepPortalInLab();
+  fitAndWireProjectPreviews();
   prepareWorkflowActions();
   new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => {
     if (node.nodeType === 1) prepareWorkflowActions(node);
