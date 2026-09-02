@@ -88,3 +88,9 @@
     }
   };
 })();
+
+// The focused portfolio keeps workflow details private; load the shared
+// contact dialog on every demo without coupling it to the demo renderer.
+const workflowContactScript = document.createElement('script');
+workflowContactScript.src = 'contact-workflow.js';
+document.head.appendChild(workflowContactScript);
